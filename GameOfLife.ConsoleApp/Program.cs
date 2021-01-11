@@ -5,27 +5,37 @@ namespace GameOfLife.ConsoleApp
 {
     class Program
     {      
-        private const int GRID_COLS = 50;
-        private const int GRID_ROWS = 35;
-        private const int SEED_LIVE_SQUARES = 400;
+        //private const int GRID_COLS = 50;
+        //private const int GRID_ROWS = 35;
+        private const int SEED_LIVE_SQUARES_PERC = 23;
 
         const int _MAX_TICKS = 500;
         const int _TICK_INTERVAL = 250;
+
+        private const int BOTTOM_MARGIN = 10;
 
         static (int x, int y) s_CursorPos;
 
         static void Main(string[] args)
         {
+            Console.Clear();
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.CursorVisible = false;
+            //Console.SetWindowSize(Console.LargestWindowWidth - 5, Console.LargestWindowHeight - 5);
+            Console.SetWindowPosition(0,0);
 
-            var game = new Game(GRID_COLS, GRID_ROWS, SEED_LIVE_SQUARES, true);
+            var GRID_ROWS = Console.WindowHeight - BOTTOM_MARGIN;
+            var GRID_COLS = (Console.WindowWidth / 2) - 1;
+
+            var seedLiveSquares = (int)((GRID_ROWS * GRID_COLS) * (SEED_LIVE_SQUARES_PERC / 100D));
+
+            var game = new Game(GRID_COLS, GRID_ROWS, seedLiveSquares, true);
             DrawGame(game);
 
             s_CursorPos = (0, game.Rows + 2);
             ResetCursor();
-            Console.WindowHeight = s_CursorPos.y + 10;
+            Console.WriteLine($"Seeded with {SEED_LIVE_SQUARES_PERC}% [{seedLiveSquares}]. Press Enter to start.");
 
             Console.ReadLine();
 
