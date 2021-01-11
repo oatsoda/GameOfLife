@@ -5,12 +5,12 @@ namespace GameOfLife.ConsoleApp
 {
     class Program
     {      
-        private const int GRID_COLS = 40;
-        private const int GRID_ROWS = 30;
+        private const int GRID_COLS = 50;
+        private const int GRID_ROWS = 35;
         private const int SEED_LIVE_SQUARES = 400;
 
-        const int _MAX_TICKS = 80;
-        const int _TICK_INTERVAL = 400;
+        const int _MAX_TICKS = 500;
+        const int _TICK_INTERVAL = 250;
 
         static (int x, int y) s_CursorPos;
 
@@ -20,7 +20,7 @@ namespace GameOfLife.ConsoleApp
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.CursorVisible = false;
 
-            var game = new Game(GRID_COLS, GRID_ROWS, SEED_LIVE_SQUARES, false);
+            var game = new Game(GRID_COLS, GRID_ROWS, SEED_LIVE_SQUARES, true);
             DrawGame(game);
 
             s_CursorPos = (0, game.Rows + 2);

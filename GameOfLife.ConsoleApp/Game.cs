@@ -43,7 +43,7 @@ namespace GameOfLife.ConsoleApp
             
             foreach (var (x, y) in GetGridSquares())
             {
-                var n = LiveNeighbours(x,y);
+                var n = CountLiveNeighbours(x,y);
 
                 /*
                 Any live cell with fewer than two live neighbours dies, as if by underpopulation.
@@ -67,8 +67,8 @@ namespace GameOfLife.ConsoleApp
             }
 
             // Apply changes
-            foreach (var change in changes)
-                Grid[change.x, change.y] = change.alive;
+            foreach (var (x, y, alive) in changes)
+                Grid[x, y] = alive;
 
             return changes;
         }
@@ -76,31 +76,44 @@ namespace GameOfLife.ConsoleApp
         public IEnumerable<(int x, int y)> GetGridSquares()
         {
             for (int x = 0; x < Cols; x++)
-            {
                 for (int y = 0; y < Rows; y++)
-                {
                     yield return (x, y);
-                }
-            }
         }
 
         public bool IsDeserted => GetGridSquares().All(square => !Grid[square.x, square.y]);
 
-        private int LiveNeighbours(int x, int y)
+        private int CountLiveNeighbours(int x, int y)
         {
             var t = 0;
 
             for (int xN = x-1; xN <= x+1; xN++)
             {
-                if (xN < 0 || xN >= Cols)
-                    continue;
+                var targetX = xN;
+
+                if (targetX < 0 || targetX >= Cols)
+                {
+                    if (!m_WrapGrid)
+                        continue;
+
+                    targetX = targetX < 0 ? (Cols - 1) : 0; // Wrap
+                }
 
                 for (int yN = y-1; yN <= y+1; yN++)
                 {
-                    if (yN < 0 || yN >= Rows || (xN == x && yN == y))
+                    var targetY = yN;
+
+                    if (targetX == x && targetY == y)
                         continue;
 
-                    if (Grid[xN,yN])
+                    if (targetY < 0 || targetY >= Rows)
+                    {
+                        if (!m_WrapGrid)
+                            continue;
+                        
+                        targetY = targetY < 0 ? (Rows - 1) : 0; // Wrap
+                    }
+
+                    if (Grid[targetX, targetY])
                         t++;
                 }
 
